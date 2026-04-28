@@ -217,8 +217,8 @@ MIT License - 详见 [LICENSE](./LICENSE)
 
 ## 📞 联系方式
 
-- 项目主页：[GitHub](https://github.com/whitecycle/whitecycle-web)
-- 问题反馈：[Issues](https://github.com/whitecycle/whitecycle-web/issues)
+- 项目主页：[(https://github.com/haxix/-/blob/main/whitecycle-web)]
+- 问题反馈：clorisLi7@outlook.com
 - 邮箱：clorisLi7@outlook.com
 
 ---
