@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>白循 WhiteCycle - 登录</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: auto;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .login-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px 40px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin: auto;
+        }
+        
+        .login-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .login-container::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+        
+        .login-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .login-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-icon {
+            font-size: 64px;
+            margin-bottom: 12px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+        
+        .logo-subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-top: 6px;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: #f5f5f7;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            background: white;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #999;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .tips {
+            margin-top: 18px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.15);
+        }
+        
+        .tips-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .tips-content {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .divider {
+            margin: 18px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: #e5e5e5;
+        }
+        
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 12px;
+            color: #999;
+            font-size: 11px;
+            position: relative;
+        }
+        
+        .clear-data-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #999;
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .clear-data-btn:hover {
+            background: #f5f5f7;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        
+        .loading::before {
+            content: '';
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 响应式优化 */
+        @media (max-height: 700px) {
+            .login-container {
+                padding: 30px 30px;
+                max-height: 95vh;
+            }
+            
+            .logo-icon {
+                font-size: 48px;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+            }
+            
+            .form-input {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+            
+            .login-btn {
+                padding: 14px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 25px;
+                border-radius: 20px;
+            }
+            
+            .logo-icon {
+                font-size: 48px;
+            }
+            
+            .logo-text {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-icon">💖</div>
+            <div class="logo-text">白循 WhiteCycle</div>
+            <div class="logo-subtitle">记录每一个美好的瞬间</div>
+        </div>
+        
+        <div id="error-message" class="error-message"></div>
+        
+        <!-- 提示问题容器（失败 5 次后显示） -->
+        <div id="security-question-container" style="display: none; margin-top: 20px;">
+            <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(255, 159, 67, 0.1) 100%); padding: 16px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.3); margin-bottom: 16px;">
+                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                    <span style="font-size: 24px; flex-shrink: 0;">🔒</span>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: #92400e; margin-bottom: 8px; font-size: 14px;">连续验证失败</div>
+                        <div style="font-size: 13px; line-height: 1.6; color: #78350f;">
+                            为了账户安全，请回答以下问题来验证身份
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: #92400e;">🔐 安全提示问题</label>
+                <div id="security-question-text" style="font-size: 15px; font-weight: 500; color: #78350f; padding: 12px; background: rgba(254, 243, 199, 0.5); border-radius: 8px; margin-bottom: 12px;">
+                    加载中...
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="security-answer">答案</label>
+                <input 
+                    type="text" 
+                    id="security-answer" 
+                    class="form-input" 
+                    placeholder="请输入答案（不区分大小写）"
+                    style="border-color: #f59e0b;"
+                >
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <button class="btn btn-secondary" onclick="resetLoginForm()" style="flex: 1;">
+                    返回登录
+                </button>
+                <button class="btn btn-primary" onclick="verifySecurityAnswer()" style="flex: 1; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    验证答案
+                </button>
+            </div>
+            
+            <div id="security-answer-error" style="margin-top: 12px; text-align: center; color: #dc2626; font-size: 13px; display: none;"></div>
+        </div>
+        
+        <!-- 重置密码表单（验证通过后显示） -->
+        <div id="reset-password-container" style="display: none; margin-top: 20px;">
+            <div style="text-align: center; padding: 16px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%); border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.3); margin-bottom: 16px;">
+                <div style="font-size: 24px; margin-bottom: 8px;">✅</div>
+                <div style="font-weight: 600; color: #065f46; font-size: 14px;">验证成功</div>
+                <div style="font-size: 13px; color: #047857; margin-top: 4px;">现在可以重置密码了</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="reset-password">新密码</label>
+                <input 
+                    type="password" 
+                    id="reset-password" 
+                    class="form-input" 
+                    placeholder="请输入新密码（至少 6 位）"
+                    style="border-color: #10b981;"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="reset-password-confirm">确认密码</label>
+                <input 
+                    type="password" 
+                    id="reset-password-confirm" 
+                    class="form-input" 
+                    placeholder="请再次输入新密码"
+                    style="border-color: #10b981;"
+                >
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
+                <button class="btn btn-secondary" onclick="resetLoginForm()" style="flex: 1;">
+                    取消
+                </button>
+                <button class="btn btn-primary" onclick="confirmResetPassword()" style="flex: 1;">
+                    重置密码
+                </button>
+            </div>
+            
+            <div id="reset-password-error" style="margin-top: 12px; text-align: center; color: #dc2626; font-size: 13px; display: none;"></div>
+        </div>
+        
+        <form id="login-form" onsubmit="return false;">
+            <div class="form-group">
+                <label class="form-label" for="username">账户名</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    class="form-input" 
+                    placeholder="请输入您的账户名"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="password">密码</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    class="form-input" 
+                    placeholder="请输入您的密码"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+            
+            <button type="submit" class="login-btn" onclick="handleLogin()">
+                登录
+            </button>
+            
+            <button type="button" class="login-btn" onclick="handleRegister()" style="margin-top: 12px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);">
+                注册新账户
+            </button>
+            
+            <div class="loading" id="loading">登录中...</div>
+        </form>
+        
+        <div class="divider">
+            <span>或者</span>
+        </div>
+        
+        <button class="clear-data-btn" onclick="handleClearData()">
+            🗑️ 清除所有数据并重新开始
+        </button>
+        
+        <div class="tips">
+            <div class="tips-title">
+                💡 安全提示
+            </div>
+            <div class="tips-content">
+                • 密码使用 SHA-256 加密存储，安全可靠<br>
+                • 忘记密码将无法找回，请妥善保管<br>
+                • 清除数据会删除所有记录，操作需谨慎
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'php/api';
+        let failedAttempts = 0;
+        let currentUserId = null;
+        let currentUsername = null;
+        
+        // 检查是否已有登录状态
+        window.addEventListener('DOMContentLoaded', () => {
+            const userId = sessionStorage.getItem('whitecycle_user_id');
+            if (userId) {
+                // 已登录，直接跳转
+                window.location.href = 'index.html';
+            }
+        });
+        
+        // 处理登录（临时 LocalStorage 版本）
+        async function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const loadingDiv = document.getElementById('loading');
+            
+            if (!username || !password) {
+                showError('请输入账户名和密码');
+                return;
+            }
+            
+            loadingDiv.style.display = 'block';
+            currentUsername = username;
+            
+            // 临时方案：从 LocalStorage 验证用户
+            const users = JSON.parse(localStorage.getItem('whitecycle_users') || '{}');
+            const user = users[username];
+            
+            if (user && user.password === password) {
+                // 登录成功
+                sessionStorage.setItem('whitecycle_user_id', user.id);
+                sessionStorage.setItem('whitecycle_username', username);
+                currentUserId = user.id;
+                
+                loadingDiv.style.display = 'none';
+                window.location.href = 'index.html';
+            } else {
+                // 登录失败
+                loadingDiv.style.display = 'none';
+                failedAttempts++;
+                
+                if (failedAttempts >= 5) {
+                    showError('⚠️ 连续失败 5 次，请清除数据或重试');
+                } else {
+                    showError(`账户名或密码错误（剩余尝试次数：${5 - failedAttempts}）`);
+                }
+            }
+        }
+        
+        // 处理注册（临时 LocalStorage 版本）
+        async function handleRegister() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const loadingDiv = document.getElementById('loading');
+            
+            if (!username || username.length < 3) {
+                showError('账户名至少 3 个字符');
+                return;
+            }
+            
+            if (!password || password.length < 6) {
+                showError('密码至少 6 个字符');
+                return;
+            }
+            
+            loadingDiv.style.display = 'block';
+            loadingDiv.textContent = '注册中...';
+            
+            // 临时方案：存储到 LocalStorage
+            const users = JSON.parse(localStorage.getItem('whitecycle_users') || '{}');
+            
+            if (users[username]) {
+                loadingDiv.style.display = 'none';
+                loadingDiv.textContent = '登录中...';
+                showError('用户名已存在');
+                return;
+            }
+            
+            // 创建新用户
+            const userId = Date.now().toString();
+            users[username] = {
+                id: userId,
+                username: username,
+                password: password, // 注意：这是临时的，不安全
+                createdAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('whitecycle_users', JSON.stringify(users));
+            
+            // 注册成功，自动登录
+            sessionStorage.setItem('whitecycle_user_id', userId);
+            sessionStorage.setItem('whitecycle_username', username);
+            currentUserId = userId;
+            
+            loadingDiv.style.display = 'none';
+            alert('✅ 注册成功！');
+            window.location.href = 'index.html';
+        }
+        
+        /**
+         * 失败 5 次后显示提示问题
+         */
+        async function showSecurityQuestionAfterFailed(username) {
+            const errorDiv = document.getElementById('error-message');
+            const questionContainer = document.getElementById('security-question-container');
+            const questionText = document.getElementById('security-question-text');
+            
+            // 隐藏错误消息
+            errorDiv.style.display = 'none';
+            
+            // 隐藏登录表单
+            document.getElementById('login-form').style.display = 'none';
+            document.querySelector('.divider').style.display = 'none';
+            document.querySelector('.clear-data-btn').style.display = 'none';
+            
+            // 显示提示问题容器
+            questionContainer.style.display = 'block';
+            
+            // 获取用户 ID（通过用户名）
+            try {
+                // 先尝试获取用户信息
+                const verifyResponse = await fetch(`${API_BASE}/auth.php?action=getUserId&username=${encodeURIComponent(username)}`);
+                const verifyResult = await verifyResponse.json();
+                
+                if (verifyResult.user_id) {
+                    currentUserId = verifyResult.user_id;
+                    
+                    // 获取提示问题
+                    const questionResponse = await fetch(`${API_BASE}/auth.php?action=getSecurityQuestion&user_id=${currentUserId}`);
+                    const questionResult = await questionResponse.json();
+                    
+                    if (questionResult.success && questionResult.question) {
+                        questionText.textContent = questionResult.question;
+                    } else {
+                        questionText.textContent = '⚠️ 该账户未设置提示问题，只能清除数据或联系管理员';
+                        questionText.style.color = '#dc2626';
+                        questionText.style.background = 'rgba(220, 38, 38, 0.1)';
+                    }
+                } else {
+                    questionText.textContent = '⚠️ 找不到该用户，请检查账户名是否正确';
+                    questionText.style.color = '#dc2626';
+                }
+            } catch (error) {
+                console.error('获取提示问题失败:', error);
+                questionText.textContent = '⚠️ 获取提示问题失败，请刷新页面重试';
+            }
+        }
+        
+        /**
+         * 验证提示问题答案
+         */
+        async function verifySecurityAnswer() {
+            const answer = document.getElementById('security-answer').value.trim();
+            const errorDiv = document.getElementById('security-answer-error');
+            
+            if (!answer) {
+                errorDiv.textContent = '请输入答案';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (!currentUserId) {
+                errorDiv.textContent = '用户信息错误，请返回重新登录';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth.php?action=verifySecurityAnswer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUserId,
+                        answer: answer
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 答案正确，显示重置密码表单
+                    document.getElementById('security-question-container').style.display = 'none';
+                    document.getElementById('reset-password-container').style.display = 'block';
+                } else {
+                    errorDiv.textContent = result.error || '答案错误';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('验证失败:', error);
+                errorDiv.textContent = '网络错误，请稍后重试';
+                errorDiv.style.display = 'block';
+            }
+        }
+        
+        /**
+         * 确认重置密码
+         */
+        async function confirmResetPassword() {
+            const newPassword = document.getElementById('reset-password').value;
+            const newPasswordConfirm = document.getElementById('reset-password-confirm').value;
+            const errorDiv = document.getElementById('reset-password-error');
+            
+            if (!newPassword || newPassword.length < 6) {
+                errorDiv.textContent = '密码至少需要 6 位';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (newPassword !== newPasswordConfirm) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth.php?action=resetPassword`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUserId,
+                        new_password: newPassword
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ 密码重置成功！请使用新密码登录');
+                    // 重置表单并返回登录界面
+                    resetLoginForm();
+                    failedAttempts = 0;
+                } else {
+                    errorDiv.textContent = result.error || '重置密码失败';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('重置密码失败:', error);
+                errorDiv.textContent = '网络错误，请稍后重试';
+                errorDiv.style.display = 'block';
+            }
+        }
+        
+        /**
+         * 重置登录表单
+         */
+        function resetLoginForm() {
+            document.getElementById('login-form').style.display = 'block';
+            document.querySelector('.divider').style.display = 'block';
+            document.querySelector('.clear-data-btn').style.display = 'block';
+            document.getElementById('security-question-container').style.display = 'none';
+            document.getElementById('reset-password-container').style.display = 'none';
+            
+            // 清空输入
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('security-answer').value = '';
+            document.getElementById('reset-password').value = '';
+            document.getElementById('reset-password-confirm').value = '';
+        }
+        
+        // 验证登录状态
+        async function verifyLogin(userId) {
+            try {
+                const response = await fetch(`${API_BASE}/auth.php?action=verify&user_id=${userId}`);
+                const result = await response.json();
+                
+                if (result.valid) {
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('验证失败:', error);
+            }
+        }
+        
+        // 清除数据
+        function handleClearData() {
+            if (confirm('⚠️ 确定要清除所有数据吗？此操作不可恢复！')) {
+                if (confirm('再次确认：清除数据后所有记录将永久丢失，无法找回！')) {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    alert('数据已清除，现在可以重新注册账户。');
+                    location.reload();
+                }
+            }
+        }
+        
+        // 显示错误
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 回车登录
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+    </script>
+</body>
+</html>

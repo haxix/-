@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>身份选择测试 - 白循</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .status-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        .status-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+        .status-value {
+            color: #1a1a1a;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #333;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .log {
+            background: #1a1a1a;
+            color: #10b981;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 身份选择调试工具</h1>
+        <div class="subtitle">检查和修复身份选择问题</div>
+        
+        <div class="alert alert-info">
+            <strong>💡 使用说明：</strong>
+            <br>1. 点击下方"检查身份状态"按钮
+            <br>2. 查看当前身份配置
+            <br>3. 如有问题，点击"清除身份配置"重新选择
+        </div>
+        
+        <div class="status-card">
+            <div class="status-item">
+                <span class="status-label">是否有身份配置</span>
+                <span class="status-value" id="has-profile">检查中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">身份类型</span>
+                <span class="status-value" id="identity-type">-</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">身份显示名称</span>
+                <span class="status-value" id="identity-name">-</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">身份 Emoji</span>
+                <span class="status-value" id="identity-emoji">-</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">创建时间</span>
+                <span class="status-value" id="created-at">-</span>
+            </div>
+        </div>
+        
+        <div style="margin: 20px 0;">
+            <button class="btn" onclick="checkIdentity()">🔍 检查身份状态</button>
+            <button class="btn btn-secondary" onclick="openApp()">🚀 打开应用</button>
+            <button class="btn btn-danger" onclick="clearIdentity()">🗑️ 清除身份配置</button>
+        </div>
+        
+        <div class="log" id="log">
+            <div>等待检查...</div>
+        </div>
+    </div>
+    
+    <script>
+        const IDENTITY_MAP = {
+            'MALE': { displayName: '男生', emoji: '👦' },
+            'FEMALE': { displayName: '女生', emoji: '👧' },
+            'GAY': { displayName: 'Gay', emoji: '🏳️' },
+            'LESBIAN': { displayName: '拉拉', emoji: '🌸' },
+            'OTHER': { displayName: 'Other', emoji: '✨' },
+            'FRIEND': { displayName: '友谊助手', emoji: '💕' }
+        };
+        
+        function addLog(message) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.textContent = `[${time}] ${message}`;
+            logDiv.appendChild(line);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function checkIdentity() {
+            addLog('开始检查身份配置...');
+            
+            try {
+                const profileData = localStorage.getItem('whitecycle_profile_v6');
+                
+                if (!profileData) {
+                    addLog('❌ 未找到身份配置');
+                    updateStatus(false);
+                    showInfo('未找到身份配置，请点击"打开应用"重新选择');
+                    return;
+                }
+                
+                const profile = JSON.parse(profileData);
+                addLog('✅ 找到身份配置');
+                addLog(`📝 身份类型：${profile.identity}`);
+                
+                const identity = IDENTITY_MAP[profile.identity];
+                if (identity) {
+                    addLog(`🎭 身份名称：${identity.displayName}`);
+                    addLog(`😊 身份 Emoji: ${identity.emoji}`);
+                    addLog(`📅 创建时间：${new Date(profile.createdAt).toLocaleString()}`);
+                } else {
+                    addLog('⚠️ 未知的身份类型');
+                }
+                
+                updateStatus(true, profile, identity);
+                showSuccess('身份配置正常');
+                
+            } catch (e) {
+                addLog(`❌ 检查失败：${e.message}`);
+                updateStatus(false);
+                showError('检查失败，请查看控制台错误信息');
+            }
+        }
+        
+        function updateStatus(hasProfile, profile = null, identity = null) {
+            document.getElementById('has-profile').textContent = hasProfile ? '✅ 是' : '❌ 否';
+            
+            if (hasProfile && profile) {
+                document.getElementById('identity-type').textContent = profile.identity;
+                document.getElementById('identity-name').textContent = identity ? identity.displayName : '未知';
+                document.getElementById('identity-emoji').textContent = identity ? identity.emoji : '-';
+                document.getElementById('created-at').textContent = new Date(profile.createdAt).toLocaleString();
+            } else {
+                document.getElementById('identity-type').textContent = '-';
+                document.getElementById('identity-name').textContent = '-';
+                document.getElementById('identity-emoji').textContent = '-';
+                document.getElementById('created-at').textContent = '-';
+            }
+        }
+        
+        function clearIdentity() {
+            if (confirm('确定要清除身份配置吗？清除后需要重新选择身份。')) {
+                try {
+                    localStorage.removeItem('whitecycle_profile_v6');
+                    addLog('✅ 身份配置已清除');
+                    showSuccess('身份配置已清除，请点击"打开应用"重新选择');
+                    checkIdentity();
+                } catch (e) {
+                    addLog(`❌ 清除失败：${e.message}`);
+                    showError('清除失败，请手动清除浏览器数据');
+                }
+            }
+        }
+        
+        function openApp() {
+            window.location.href = 'index.html';
+        }
+        
+        function showInfo(message) {
+            const alertDiv = document.querySelector('.alert-info');
+            if (alertDiv) {
+                alertDiv.style.display = 'block';
+                alertDiv.innerHTML = `<strong>💡 信息：</strong><br>${message}`;
+            }
+        }
+        
+        function showSuccess(message) {
+            const infoAlert = document.querySelector('.alert-info');
+            if (infoAlert) {
+                infoAlert.style.display = 'none';
+            }
+            
+            const successDiv = document.createElement('div');
+            successDiv.className = 'alert alert-success';
+            successDiv.innerHTML = `<strong>✅ 成功：</strong><br>${message}`;
+            
+            const existing = document.querySelector('.alert-success');
+            if (existing) existing.remove();
+            
+            document.querySelector('.container').insertBefore(successDiv, document.querySelector('.status-card'));
+        }
+        
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert';
+            errorDiv.style.background = '#fee2e2';
+            errorDiv.style.color = '#991b1b';
+            errorDiv.style.borderLeft = '4px solid #ef4444';
+            errorDiv.innerHTML = `<strong>❌ 错误：</strong><br>${message}`;
+            
+            const existing = document.querySelector('.alert:not(.alert-info):not(.alert-success)');
+            if (existing) existing.remove();
+            
+            document.querySelector('.container').insertBefore(errorDiv, document.querySelector('.status-card'));
+        }
+        
+        // 页面加载时自动检查
+        window.addEventListener('load', () => {
+            addLog('页面加载完成，自动检查身份配置...');
+            setTimeout(checkIdentity, 500);
+        });
+    </script>
+</body>
+</html>

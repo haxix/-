@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>白循 WhiteCycle - Bug 检查工具</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .test-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-section h2 {
+            color: #1a1a1a;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        .status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .status.pass { background: #10b981; color: white; }
+        .status.fail { background: #ef4444; color: white; }
+        .status.warn { background: #f59e0b; color: white; }
+        .test-label {
+            flex: 1;
+            color: #333;
+            font-size: 14px;
+        }
+        .test-result {
+            font-size: 12px;
+            color: #666;
+        }
+        .btn {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #333;
+        }
+        .summary {
+            background: #1a1a1a;
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .summary-item {
+            text-align: center;
+        }
+        .summary-value {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        .summary-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 白循 Bug 检查工具</h1>
+        <div class="subtitle">自动检测应用中的潜在问题</div>
+        
+        <div style="margin-bottom: 20px;">
+            <button class="btn" onclick="runAllTests()">▶️ 运行全部测试</button>
+            <button class="btn btn-secondary" onclick="openApp()">🚀 打开应用</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress" style="width: 0%"></div>
+        </div>
+        
+        <div id="test-results"></div>
+        
+        <div class="summary" id="summary" style="display: none;">
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-value" id="pass-count">0</div>
+                    <div class="summary-label">通过</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="fail-count">0</div>
+                    <div class="summary-label">失败</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="warn-count">0</div>
+                    <div class="summary-label">警告</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const tests = [
+            {
+                section: '核心功能测试',
+                items: [
+                    {
+                        id: 'app-exists',
+                        label: '应用主对象存在',
+                        test: () => typeof app !== 'undefined'
+                    },
+                    {
+                        id: 'init-function',
+                        label: '初始化函数存在',
+                        test: () => typeof app.init === 'function'
+                    },
+                    {
+                        id: 'start-recording',
+                        label: '开始记录函数存在',
+                        test: () => typeof app.startRecording === 'function'
+                    },
+                    {
+                        id: 'stop-recording',
+                        label: '停止记录函数存在',
+                        test: () => typeof app.stopRecording === 'function'
+                    },
+                    {
+                        id: 'toggle-participation',
+                        label: '多选参与方式函数存在',
+                        test: () => typeof app.toggleParticipation === 'function'
+                    }
+                ]
+            },
+            {
+                section: '页面导航测试',
+                items: [
+                    {
+                        id: 'switch-page',
+                        label: '页面切换函数存在',
+                        test: () => typeof app.switchPage === 'function'
+                    },
+                    {
+                        id: 'nav-items',
+                        label: '导航项存在',
+                        test: () => document.querySelectorAll('.nav-item').length === 4
+                    },
+                    {
+                        id: 'pages-exist',
+                        label: '所有页面存在',
+                        test: () => document.querySelectorAll('.page').length === 4
+                    }
+                ]
+            },
+            {
+                section: 'UI 组件测试',
+                items: [
+                    {
+                        id: 'modal-detail',
+                        label: '详情模态框存在',
+                        test: () => document.getElementById('detail-modal') !== null
+                    },
+                    {
+                        id: 'modal-identity',
+                        label: '身份选择模态框存在',
+                        test: () => document.getElementById('identity-modal') !== null
+                    },
+                    {
+                        id: 'modal-confirm',
+                        label: '确认对话框存在',
+                        test: () => document.getElementById('confirm-modal') !== null
+                    },
+                    {
+                        id: 'toast',
+                        label: 'Toast 通知组件存在',
+                        test: () => document.getElementById('toast') !== null
+                    }
+                ]
+            },
+            {
+                section: '数据管理测试',
+                items: [
+                    {
+                        id: 'localStorage',
+                        label: 'LocalStorage 可用',
+                        test: () => {
+                            try {
+                                localStorage.setItem('test', 'test');
+                                localStorage.removeItem('test');
+                                return true;
+                            } catch (e) {
+                                return false;
+                            }
+                        }
+                    },
+                    {
+                        id: 'export-data',
+                        label: '数据导出函数存在',
+                        test: () => typeof app.exportData === 'function'
+                    },
+                    {
+                        id: 'import-data',
+                        label: '数据导入函数存在',
+                        test: () => typeof app.importData === 'function'
+                    }
+                ]
+            },
+            {
+                section: '统计功能测试',
+                items: [
+                    {
+                        id: 'update-stats',
+                        label: '统计更新函数存在',
+                        test: () => typeof app.updateStats === 'function'
+                    },
+                    {
+                        id: 'update-achievements',
+                        label: '成就更新函数存在',
+                        test: () => typeof app.updateAchievements === 'function'
+                    },
+                    {
+                        id: 'update-suggestions',
+                        label: '建议更新函数存在',
+                        test: () => typeof app.updateSuggestions === 'function'
+                    },
+                    {
+                        id: 'calendar-render',
+                        label: '日历渲染函数存在',
+                        test: () => typeof app.renderCalendar === 'function'
+                    }
+                ]
+            },
+            {
+                section: '主题和设置测试',
+                items: [
+                    {
+                        id: 'toggle-theme',
+                        label: '主题切换函数存在',
+                        test: () => typeof app.toggleTheme === 'function'
+                    },
+                    {
+                        id: 'theme-toggle-input',
+                        label: '主题切换开关存在',
+                        test: () => document.getElementById('theme-toggle') !== null
+                    },
+                    {
+                        id: 'clear-data',
+                        label: '清除数据对话框存在',
+                        test: () => typeof app.showClearDataDialog === 'function'
+                    }
+                ]
+            }
+        ];
+        
+        let passCount = 0;
+        let failCount = 0;
+        let warnCount = 0;
+        let totalTests = 0;
+        let completedTests = 0;
+        
+        tests.forEach(section => {
+            totalTests += section.items.length;
+        });
+        
+        function runAllTests() {
+            passCount = 0;
+            failCount = 0;
+            warnCount = 0;
+            completedTests = 0;
+            
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+            
+            tests.forEach((section, sectionIndex) => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'test-section';
+                
+                const title = document.createElement('h2');
+                title.textContent = section.section;
+                sectionDiv.appendChild(title);
+                
+                section.items.forEach((item, itemIndex) => {
+                    setTimeout(() => {
+                        runTest(item, sectionDiv);
+                        updateProgress();
+                    }, (sectionIndex * 100 + itemIndex * 50));
+                });
+                
+                resultsDiv.appendChild(sectionDiv);
+            });
+        }
+        
+        function runTest(item, container) {
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test-item';
+            
+            let status, result;
+            try {
+                result = item.test();
+                if (result === true) {
+                    status = '✓';
+                    statusClass = 'pass';
+                    passCount++;
+                } else {
+                    status = '✗';
+                    statusClass = 'fail';
+                    failCount++;
+                }
+            } catch (e) {
+                status = '⚠';
+                statusClass = 'warn';
+                warnCount++;
+                result = false;
+            }
+            
+            testDiv.innerHTML = `
+                <div class="status ${statusClass}">${status}</div>
+                <div class="test-label">
+                    <div>${item.label}</div>
+                    <div class="test-result">${item.id}</div>
+                </div>
+            `;
+            
+            container.appendChild(testDiv);
+            
+            if (completedTests === totalTests - 1) {
+                showSummary();
+            }
+            completedTests++;
+        }
+        
+        function updateProgress() {
+            const progress = (completedTests / totalTests) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        function showSummary() {
+            document.getElementById('summary').style.display = 'block';
+            document.getElementById('pass-count').textContent = passCount;
+            document.getElementById('fail-count').textContent = failCount;
+            document.getElementById('warn-count').textContent = warnCount;
+            
+            if (failCount === 0 && warnCount === 0) {
+                showToast('🎉 所有测试通过！应用运行正常', 'success');
+            } else if (failCount > 0) {
+                showToast(`⚠️ 发现 ${failCount} 个问题，请检查`, 'error');
+            } else {
+                showToast(`⚠️ 发现 ${warnCount} 个警告，建议检查`, 'warn');
+            }
+        }
+        
+        function showToast(message, type) {
+            // 简单实现
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        function openApp() {
+            window.location.href = 'index.html';
+        }
+        
+        // 自动运行测试
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>

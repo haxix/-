@@ -1,0 +1,818 @@
+/* ===================================
+   Animations - 动画样式
+   =================================== */
+
+/* Page Transitions 页面过渡 */
+.page {
+    animation: pageEnter var(--transition-base) ease-out;
+}
+
+@keyframes pageEnter {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Card Animations 卡片动画 */
+.card {
+    animation: cardFloat 0.6s ease-out;
+}
+
+@keyframes cardFloat {
+    0% { 
+        opacity: 0; 
+        transform: translateY(10px) scale(0.98); 
+    }
+    50% {
+        transform: translateY(-2px) scale(1.01);
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+/* List Item Animations 列表项动画 */
+.record-item {
+    animation: listItemSlide var(--transition-base) ease-out;
+}
+
+@keyframes listItemSlide {
+    from { 
+        opacity: 0; 
+        transform: translateX(-20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateX(0); 
+    }
+}
+
+/* Stagger Animation Delay 交错动画延迟 */
+.record-item:nth-child(1) { animation-delay: 0.05s; }
+.record-item:nth-child(2) { animation-delay: 0.1s; }
+.record-item:nth-child(3) { animation-delay: 0.15s; }
+.record-item:nth-child(4) { animation-delay: 0.2s; }
+.record-item:nth-child(5) { animation-delay: 0.25s; }
+.record-item:nth-child(6) { animation-delay: 0.3s; }
+.record-item:nth-child(7) { animation-delay: 0.35s; }
+.record-item:nth-child(8) { animation-delay: 0.4s; }
+.record-item:nth-child(9) { animation-delay: 0.45s; }
+.record-item:nth-child(10) { animation-delay: 0.5s; }
+
+/* Stat Card Animations 统计卡片动画 */
+.stat-card {
+    animation: statCardBounce 0.8s ease-out;
+}
+
+@keyframes statCardBounce {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.8); 
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Chart Bar Animations 图表动画 */
+.chart-bar {
+    animation: chartBarGrow var(--transition-slow) ease-out;
+}
+
+@keyframes chartBarGrow {
+    from { 
+        height: 0; 
+        opacity: 0; 
+    }
+    to { 
+        opacity: 1; 
+    }
+}
+
+/* Button Animations 按钮动画 */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    transform: scale(0);
+    transition: transform 0.6s;
+}
+
+.btn:active::after {
+    transform: scale(2);
+}
+
+/* Ripple Effect 涟漪效果 */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: rippleEffect 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Number Counter Animation 数字计数动画 */
+@keyframes numberCount {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.animate-number {
+    animation: numberCount 0.8s ease-out;
+}
+
+/* Success Celebration 成功庆祝动画 */
+@keyframes celebrateSuccess {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg); 
+    }
+    25% { 
+        transform: scale(1.2) rotate(-10deg); 
+    }
+    75% { 
+        transform: scale(1.2) rotate(10deg); 
+    }
+}
+
+.celebrate {
+    animation: celebrateSuccess 0.6s ease-out;
+}
+
+/* Confetti Effect 彩带效果 */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: var(--accent-gradient);
+    animation: confettiFall 3s ease-out forwards;
+    pointer-events: none;
+    z-index: var(--z-tooltip);
+}
+
+@keyframes confettiFall {
+    from {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Progress Bar Animation 进度条动画 */
+@keyframes progressFill {
+    from { 
+        width: 0; 
+        opacity: 0; 
+    }
+    to { 
+        opacity: 1; 
+    }
+}
+
+.progress-fill {
+    animation: progressFill var(--transition-slow) ease-out;
+}
+
+/* Fade Animations 淡入淡出 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fade-in {
+    animation: fadeIn var(--transition-base) ease-out;
+}
+
+.fade-out {
+    animation: fadeOut var(--transition-base) ease-in;
+}
+
+/* Slide Animations 滑动动画 */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-up {
+    animation: slideInUp var(--transition-base) ease-out;
+}
+
+.slide-in-down {
+    animation: slideInDown var(--transition-base) ease-out;
+}
+
+.slide-in-left {
+    animation: slideInLeft var(--transition-base) ease-out;
+}
+
+.slide-in-right {
+    animation: slideInRight var(--transition-base) ease-out;
+}
+
+/* Scale Animations 缩放动画 */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+.scale-in {
+    animation: scaleIn var(--transition-base) ease-out;
+}
+
+.scale-out {
+    animation: scaleOut var(--transition-base) ease-in;
+}
+
+/* Rotate Animations 旋转动画 */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Bounce Animation 弹跳动画 */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.bounce {
+    animation: bounce 1s ease-in-out infinite;
+}
+
+/* Pulse Animation 脉冲动画 */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Glow Animation 发光动画 */
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+    }
+}
+
+.glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* Float Animation 浮动动画 */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-30px) rotate(5deg);
+    }
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Shake Animation 抖动动画 */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Rotate Animation 旋转动画 */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.rotate {
+    animation: rotate 20s linear infinite;
+}
+
+/* Utility Classes 工具类 */
+.animate-delay-1 { animation-delay: 0.1s; }
+.animate-delay-2 { animation-delay: 0.2s; }
+.animate-delay-3 { animation-delay: 0.3s; }
+.animate-delay-4 { animation-delay: 0.4s; }
+
+.animate-duration-fast { animation-duration: var(--transition-fast); }
+.animate-duration-base { animation-duration: var(--transition-base); }
+.animate-duration-slow { animation-duration: var(--transition-slow); }
+
+.animate-paused { animation-play-state: paused; }
+.animate-running { animation-play-state: running; }
+
+/* Hover Animations 悬停动画 */
+.hover-lift {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.hover-scale {
+    transition: transform var(--transition-base);
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.hover-rotate {
+    transition: transform var(--transition-base);
+}
+
+.hover-rotate:hover {
+    transform: rotate(5deg);
+}
+
+/* ====================
+   Detail Modal Animations 详情模态框动画
+   ==================== */
+@keyframes detailSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal[style*="padding: 24px"] {
+    animation: detailSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes statCardEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.8) rotate(-10deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.detail-stat-card:nth-child(1) {
+    animation: statCardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+.detail-stat-card:nth-child(2) {
+    animation: statCardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+.detail-stat-card:nth-child(3) {
+    animation: statCardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+}
+
+@keyframes sectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.detail-section {
+    animation: sectionFadeIn 0.4s ease-out 0.4s both;
+}
+
+.detail-section:nth-child(2) { animation-delay: 0.45s; }
+.detail-section:nth-child(3) { animation-delay: 0.5s; }
+.detail-section:nth-child(4) { animation-delay: 0.55s; }
+.detail-section:nth-child(5) { animation-delay: 0.6s; }
+
+@keyframes headerExpand {
+    from {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+    to {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+.detail-header {
+    animation: headerExpand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+@keyframes emojiBounce {
+    0%, 100% { 
+        transform: translateY(0) scale(1); 
+    }
+    50% { 
+        transform: translateY(-10px) scale(1.1); 
+    }
+}
+
+.detail-header > div > div:first-child {
+    animation: emojiBounce 2s ease-in-out infinite 1s;
+}
+
+/* ====================
+   Record Summary Animations 记录摘要动画
+   ==================== */
+@keyframes summarySlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.record-summary {
+    animation: summarySlideIn 0.4s ease-out both;
+}
+
+.record-summary:nth-child(1) { animation-delay: 0.1s; }
+.record-summary:nth-child(2) { animation-delay: 0.2s; }
+.record-summary:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes groupExpand {
+    from {
+        opacity: 0;
+        transform: scaleY(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+}
+
+.record-group {
+    animation: groupExpand 0.4s ease-out 0.2s both;
+}
+
+/* ====================
+   Theme Transition Animations 主题切换动画
+   ==================== */
+[data-identity] {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes themePulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+    }
+}
+
+[data-identity="MALE"] .header,
+[data-identity="MALE"] .btn-primary {
+    animation: themePulse 3s ease-in-out infinite;
+}
+
+@keyframes themePulsePink {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+    }
+}
+
+[data-identity="FEMALE"] .header,
+[data-identity="FEMALE"] .btn-primary {
+    animation: themePulsePink 3s ease-in-out infinite;
+}
+
+/* ====================
+   Shimmer Effect 闪烁效果
+   ==================== */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.1) 50%,
+        rgba(255,255,255,0) 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* ====================
+   Gradient Animation 渐变动画
+   ==================== */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.animated-gradient {
+    background: linear-gradient(
+        -45deg,
+        #6366f1,
+        #8b5cf6,
+        #a855f7,
+        #ec4899,
+        #3b82f6
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+/* ====================
+   Typing Effect 打字效果
+   ==================== */
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+.typing-effect {
+    overflow: hidden;
+    border-right: 2px solid var(--accent-primary);
+    white-space: nowrap;
+    animation: typing 3s steps(30, end), blink 0.8s step-end infinite;
+}
+
+/* ====================
+   Success Ring Animation 成功光环
+   ==================== */
+@keyframes successRing {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+.success-ring {
+    animation: successRing 1.5s infinite;
+}
+
+/* ====================
+   Heartbeat Animation 心跳动画
+   ==================== */
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    10% {
+        transform: scale(1.15);
+    }
+    20% {
+        transform: scale(1);
+    }
+    30% {
+        transform: scale(1.15);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+.heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+/* ====================
+   Micro-interactions 微交互
+   ==================== */
+.record-item:active {
+    transform: scale(0.98);
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.icon-btn:active {
+    transform: scale(0.92);
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ====================
+   Couple Animation �������綯��
+   ==================== */
+@keyframes heartsFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+.couple-heart {
+    position: absolute;
+    font-size: 24px;
+    animation: heartsFloat 3s ease-out infinite;
+    pointer-events: none;
+}
+
+.couple-heart:nth-child(1) { left: 10%; animation-delay: 0s; }
+.couple-heart:nth-child(2) { left: 30%; animation-delay: 0.5s; }
+.couple-heart:nth-child(3) { left: 50%; animation-delay: 1s; }
+.couple-heart:nth-child(4) { left: 70%; animation-delay: 1.5s; }
+.couple-heart:nth-child(5) { left: 90%; animation-delay: 2s; }
+
+@keyframes coupleGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.3), 0 0 40px rgba(236, 72, 153, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(236, 72, 153, 0.6), 0 0 80px rgba(236, 72, 153, 0.3);
+    }
+}
+
+.couple-mode {
+    animation: coupleGlow 3s ease-in-out infinite;
+}
+
+@keyframes starsTwinkle {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+.couple-star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #ec4899;
+    border-radius: 50%;
+    animation: starsTwinkle 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.couple-star:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+.couple-star:nth-child(2) { top: 20%; right: 30%; animation-delay: 0.3s; }
+.couple-star:nth-child(3) { bottom: 30%; left: 40%; animation-delay: 0.6s; }
+.couple-star:nth-child(4) { bottom: 10%; right: 20%; animation-delay: 0.9s; }
+.couple-star:nth-child(5) { top: 50%; left: 10%; animation-delay: 1.2s; }

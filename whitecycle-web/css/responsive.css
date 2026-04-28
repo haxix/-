@@ -1,0 +1,204 @@
+/* ===================================
+   Responsive - 响应式设计
+   =================================== */
+
+/* Mobile First 移动端优先 */
+
+/* 小型设备（手机，最大 640px） */
+@media (max-width: 640px) {
+    :root {
+        --font-size-6xl: 56px;
+        --font-size-5xl: 42px;
+        --font-size-4xl: 28px;
+    }
+    
+    .header {
+        padding: var(--spacing-xl);
+    }
+    
+    .main-content {
+        padding: 0 var(--spacing-xl) 100px;
+    }
+    
+    .welcome-card {
+        padding: var(--spacing-3xl) var(--spacing-xl);
+    }
+    
+    .welcome-title {
+        font-size: var(--font-size-3xl);
+    }
+    
+    .bottom-nav {
+        bottom: var(--spacing-md);
+        left: var(--spacing-md);
+        right: var(--spacing-md);
+        transform: none;
+        justify-content: space-around;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .nav-label {
+        display: none;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .identity-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .calendar-grid {
+        gap: 4px;
+    }
+    
+    .calendar-day {
+        font-size: 12px;
+    }
+    
+    .modal {
+        padding: var(--spacing-2xl);
+        margin: var(--spacing-md);
+    }
+    
+    .version-features ul {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 中型设备（平板，641px - 1024px） */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .main-content {
+        padding: 0 var(--spacing-3xl) 120px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-options {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .bottom-nav {
+        max-width: 90%;
+    }
+}
+
+/* 大型设备（桌面，1025px - 1440px） */
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .main-content {
+        padding: 0 var(--spacing-4xl) 120px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* 超大型设备（大屏，大于 1440px） */
+@media (min-width: 1441px) {
+    .main-content {
+        padding: 0 var(--spacing-4xl) 120px;
+    }
+}
+
+/* 横屏模式 */
+@media (orientation: landscape) and (max-height: 500px) {
+    .header {
+        padding: var(--spacing-md);
+    }
+    
+    .welcome-card {
+        padding: var(--spacing-xl);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .welcome-title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .bottom-nav {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+}
+
+/* 折叠屏设备 */
+@media (spanning: single-fold) {
+    .app {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .main-content {
+        flex: 1;
+    }
+}
+
+/* 鼠标悬停设备 */
+@media (hover: hover) {
+    .card:hover {
+        transform: translateY(-4px);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .nav-item:hover {
+        transform: translateY(-4px);
+    }
+}
+
+/* 无悬停设备（触摸屏） */
+@media (hover: none) {
+    .card:active {
+        transform: scale(0.98);
+    }
+    
+    .btn:active {
+        transform: scale(0.98);
+    }
+    
+    .nav-item:active {
+        transform: scale(0.95);
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .header,
+    .bottom-nav,
+    .modal-overlay,
+    .toast {
+        display: none !important;
+    }
+    
+    .app {
+        max-width: 100%;
+    }
+    
+    .main-content {
+        padding: 0;
+    }
+    
+    .card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
+
+/* 高 DPI 屏幕 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .chart-bar {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}

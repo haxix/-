@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>白循 WhiteCycle - 健康管理助手</title>
+    <meta name="description" content="白循是一款健康管理应用，帮助用户记录和分析个人生活习惯，提倡健康的生活方式">
+    <meta name="keywords" content="健康管理，记录，统计，白循，WhiteCycle">
+    <meta name="author" content="WhiteCycle Team">
+    <meta name="theme-color" content="#0f0f0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="config/manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layouts.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="app" id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <span class="logo-text-vertical">白循</span>
+                        <span class="logo-text-horizontal">WhiteCycle</span>
+                    </div>
+                    <div class="header-divider"></div>
+                </div>
+                <div class="header-right">
+                    <div class="current-date" id="current-date"></div>
+                    <div class="header-actions">
+                        <button class="icon-btn" onclick="app.toggleTheme()" title="切换主题" aria-label="切换主题">
+                            <span class="icon">🌓</span>
+                        </button>
+                        <div class="user-avatar" id="user-avatar" onclick="app.showProfile()" aria-label="用户信息">
+                            <span>👤</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Card -->
+            <div class="welcome-card">
+                <div class="welcome-title" id="welcome-title">晚上好</div>
+                <div class="welcome-subtitle" id="welcome-subtitle">记录你的健康生活</div>
+            </div>
+            
+            <!-- Record Page -->
+            <div class="page active" id="page-record" data-page="record">
+                <div class="card">
+                    <div class="form-group">
+                        <div class="form-label">
+                            <span class="icon">🛠️</span>
+                            <span>工具使用（可选）</span>
+                        </div>
+                        <input type="text" class="form-input" id="tool-input" placeholder="输入使用的工具...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-label">
+                            <span class="icon">👥</span>
+                            <span>参与方式（可多选）</span>
+                        </div>
+                        <div class="form-options" id="participation-options">
+                            <div class="form-option" data-type="solo" onclick="app.toggleParticipation('solo', this)">
+                                <div class="form-option-icon">🧘</div>
+                                <div class="form-option-label">独处时光</div>
+                                <div class="option-check">✓</div>
+                            </div>
+                            <div class="form-option" data-type="together" onclick="app.toggleParticipation('together', this)">
+                                <div class="form-option-icon">💑</div>
+                                <div class="form-option-label">二人世界</div>
+                                <div class="option-check">✓</div>
+                            </div>
+                            <div class="form-option" data-type="teacher" onclick="app.toggleParticipation('teacher', this)">
+                                <div class="form-option-icon">👨‍🏫</div>
+                                <div class="form-option-label">导师指导</div>
+                                <div class="option-check">✓</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="teacher-info-group" style="display: none;">
+                        <div class="form-label">
+                            <span class="icon">📝</span>
+                            <span>导师信息</span>
+                        </div>
+                        <input type="text" class="form-input" id="teacher-name" placeholder="导师称呼（可选）">
+                        <textarea class="form-input form-textarea" id="teacher-notes" placeholder="记录导师的建议或指导内容..." style="margin-top: 12px; min-height: 100px;"></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-lg btn-block" onclick="app.startRecording()">
+                        <span class="icon">🚀</span>
+                        <span>开始记录</span>
+                    </button>
+                </div>
+                
+                <div id="timer-section" style="display: none;">
+                    <div class="timer-container">
+                        <div class="timer-display" id="timer-display">00:00:00</div>
+                        <div class="timer-status">记录进行中（时：分：秒）</div>
+                        <button class="btn btn-primary btn-lg btn-block btn-stop" onclick="app.stopRecording()">
+                            <span class="icon">⏹️</span>
+                            <span>结束记录</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- History Page -->
+            <div class="page" id="page-history" data-page="history">
+                <div class="page-header">
+                    <h2 class="page-title">
+                        <span class="icon">📋</span>
+                        <span>历史记录</span>
+                    </h2>
+                </div>
+                
+                <div class="card calendar-card">
+                    <div class="calendar-header">
+                        <div class="calendar-title" id="calendar-title">2024 年 1 月</div>
+                        <div class="calendar-nav-group">
+                            <button class="calendar-nav" onclick="app.changeMonth(-1)" aria-label="上个月">‹</button>
+                            <button class="calendar-nav" onclick="app.changeMonth(1)" aria-label="下个月">›</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
+                </div>
+                
+                <div class="record-list" id="record-list"></div>
+            </div>
+            
+            <!-- Stats Page -->
+            <div class="page" id="page-stats" data-page="stats">
+                <div class="page-header">
+                    <h2 class="page-title">
+                        <span class="icon">📊</span>
+                        <span>数据统计</span>
+                    </h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="app.showStatDetail('total')" style="cursor: pointer;">
+                        <div class="stat-label">总记录</div>
+                        <div class="stat-value" id="stat-total">0</div>
+                    </div>
+                    <div class="stat-card" onclick="app.showStatDetail('week')" style="cursor: pointer;">
+                        <div class="stat-label">本周</div>
+                        <div class="stat-value" id="stat-week">0</div>
+                    </div>
+                    <div class="stat-card" onclick="app.showStatDetail('month')" style="cursor: pointer;">
+                        <div class="stat-label">本月</div>
+                        <div class="stat-value" id="stat-month">0</div>
+                    </div>
+                    <div class="stat-card" onclick="app.showStatDetail('avg')" style="cursor: pointer;">
+                        <div class="stat-label">平均时长</div>
+                        <div class="stat-value" id="stat-avg">0</div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">📈 周统计</h3>
+                    <div class="chart" id="week-chart"></div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">🔥 连续记录</h3>
+                    <div class="streak-container">
+                        <div class="streak-display" id="streak-display">
+                            <div class="streak-icon">🔥</div>
+                            <div class="streak-count" id="streak-count">0</div>
+                            <div class="streak-label">天连续记录</div>
+                        </div>
+                        <div class="streak-history" id="streak-history"></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">📅 健康周报</h3>
+                    <div class="weekly-report" id="weekly-report">
+                        <div class="report-summary" id="report-summary"></div>
+                        <button class="btn btn-primary btn-sm" onclick="app.generateWeeklyReport()">生成最新周报</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">💭 心情趋势</h3>
+                    <div class="mood-trend" id="mood-trend"></div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">🎯 目标设定</h3>
+                    <div class="goal-settings" id="goal-settings">
+                        <div class="goal-item">
+                            <div class="goal-header">
+                                <span class="goal-icon">📆</span>
+                                <span>每周目标次数</span>
+                            </div>
+                            <div class="goal-progress">
+                                <div class="goal-bar">
+                                    <div class="goal-fill" id="weekly-goal-fill" style="width: 0%"></div>
+                                </div>
+                                <div class="goal-stats">
+                                    <span id="weekly-goal-current">0</span> / <span id="weekly-goal-target">3</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="app.openGoalModal()">调整目标</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">🏆 成就系统</h3>
+                    <div id="achievements-list"></div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">💡 智能建议</h3>
+                    <div id="ai-suggestions"></div>
+                </div>
+            </div>
+            
+            <!-- Settings Page -->
+            <div class="page" id="page-settings" data-page="settings">
+                <div class="page-header">
+                    <h2 class="page-title">
+                        <span class="icon">⚙️</span>
+                        <span>设置</span>
+                    </h2>
+                </div>
+                
+                <div class="settings-list">
+                    <div class="settings-item" onclick="app.showIdentitySelector()">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">👤</div>
+                            <div>
+                                <div class="settings-item-label">我的身份</div>
+                                <div class="settings-item-subtitle" id="current-identity">未设置</div>
+                            </div>
+                        </div>
+                        <span class="settings-arrow">›</span>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">🌓</div>
+                            <div>
+                                <div class="settings-item-label">浅色主题</div>
+                                <div class="settings-item-subtitle">切换明亮/深色模式</div>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="theme-toggle" onchange="app.toggleTheme()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">🔔</div>
+                            <div>
+                                <div class="settings-item-label">每日提醒</div>
+                                <div class="settings-item-subtitle">接收健康提醒</div>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="reminder-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">📊</div>
+                            <div>
+                                <div class="settings-item-label">显示统计信息</div>
+                                <div class="settings-item-subtitle">开始记录时显示当天/本周/本月次数</div>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="show-stats-toggle" onchange="app.toggleShowStats()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">💕</div>
+                            <div>
+                                <div class="settings-item-label">二人世界提醒</div>
+                                <div class="settings-item-subtitle">二人世界时显示特别提醒</div>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="couple-reminder-toggle" onchange="app.toggleCoupleReminder()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-item" onclick="app.showPasswordSettings()">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">🔐</div>
+                            <div>
+                                <div class="settings-item-label">密码保护</div>
+                                <div class="settings-item-subtitle" id="password-status">未启用 · SHA-256 加密</div>
+                            </div>
+                        </div>
+                        <span class="settings-arrow">›</span>
+                    </div>
+                    
+                    <div class="settings-item" onclick="app.exportData()">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">📤</div>
+                            <div>
+                                <div class="settings-item-label">导出数据</div>
+                                <div class="settings-item-subtitle">导出为 JSON 文件</div>
+                            </div>
+                        </div>
+                        <span class="badge badge-primary">JSON</span>
+                    </div>
+                    
+                    <div class="settings-item" onclick="app.importData()">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">📥</div>
+                            <div>
+                                <div class="settings-item-label">导入数据</div>
+                                <div class="settings-item-subtitle">从 JSON 文件导入</div>
+                            </div>
+                        </div>
+                        <span class="badge badge-secondary">JSON</span>
+                    </div>
+                    
+                    <div class="settings-item" onclick="app.showClearDataDialog()">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon icon-danger">🗑️</div>
+                            <div>
+                                <div class="settings-item-label text-danger">清除所有数据</div>
+                                <div class="settings-item-subtitle">删除所有记录</div>
+                            </div>
+                        </div>
+                        <span class="settings-arrow">›</span>
+                    </div>
+                </div>
+                
+                <div class="version-card">
+                    <div class="version-label">版本</div>
+                    <div class="version-number">v6.0.0</div>
+                    <div class="version-desc">
+                        白循是一款健康管理应用，帮助用户记录和分析个人生活习惯，提倡健康的生活方式。
+                    </div>
+                    <div class="version-features">
+                        <strong>新增功能：</strong>
+                        <ul>
+                            <li>✅ 导师指导支持多选</li>
+                            <li>✅ 模态框历史记录</li>
+                            <li>✅ 日历视图</li>
+                            <li>✅ 成就系统</li>
+                            <li>✅ 智能建议</li>
+                            <li>✅ 主题切换</li>
+                            <li>✅ 数据导入导出</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="app.switchPage('record', this)" data-nav="record">
+                <div class="nav-icon">📝</div>
+                <div class="nav-label">记录</div>
+            </div>
+            <div class="nav-item" onclick="app.switchPage('history', this)" data-nav="history">
+                <div class="nav-icon">📋</div>
+                <div class="nav-label">历史</div>
+            </div>
+            <div class="nav-item" onclick="app.switchPage('stats', this)" data-nav="stats">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">统计</div>
+            </div>
+            <div class="nav-item" onclick="app.switchPage('settings', this)" data-nav="settings">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label">设置</div>
+            </div>
+        </nav>
+        
+        <!-- Lock Button (独立于底部导航) -->
+        <div class="lock-button-container">
+            <button class="lock-floating-btn" onclick="app.lockWebsite()" title="锁定网站">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Record Detail Modal -->
+    <div class="modal-overlay" id="detail-modal" onclick="closeDetailFromOverlay(event)">
+        <div class="modal" style="padding: 0;">
+            <div class="modal-content" id="detail-content"></div>
+        </div>
+    </div>
+    
+    <!-- Emotion Selection Modal -->
+    <div class="modal-overlay" id="emotion-modal" onclick="if(event.target === this) app.closeEmotionModal()">
+        <div class="modal modal-emotion">
+            <div class="modal-header">
+                <h3 class="modal-title">💭 现在感觉怎么样？</h3>
+                <button class="modal-close" onclick="app.closeEmotionModal()" aria-label="关闭">✕</button>
+            </div>
+            <div class="modal-body modal-body-scrollable">
+                <div class="emotion-instructions">
+                    <p>👆 上下滑动 / 滚动鼠标 / 按 ↑↓ 键选择</p>
+                </div>
+                <div class="emotion-selected-display" id="emotion-selected-display">
+                    <div class="emotion-selected-emoji" id="emotion-selected-emoji">😊</div>
+                    <div class="emotion-selected-label" id="emotion-selected-label">开心</div>
+                </div>
+                <div class="emotion-wheel-container">
+                    <div class="emotion-wheel-indicator">▶</div>
+                    <div class="emotion-wheel" id="emotion-wheel">
+                        <!-- 情绪选项将通过 JS 动态生成 -->
+                    </div>
+                </div>
+                <div class="emotion-actions">
+                    <button class="btn btn-secondary" onclick="app.closeEmotionModal()">跳过</button>
+                    <button class="btn btn-primary" onclick="app.confirmEmotion()">确认选择</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lock Screen Modal (Login Interface) -->
+    <div class="modal-overlay" id="lock-modal" style="background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);">
+        <div class="lock-screen">
+            <div class="lock-content">
+                <div class="lock-avatar" id="lock-avatar"></div>
+                <h1 class="lock-title">白循 WhiteCycle</h1>
+                <p class="lock-subtitle" id="lock-subtitle">请输入账户信息以继续</p>
+                
+                <div class="lock-form">
+                    <div class="lock-input-group lock-username-group">
+                        <div class="lock-input-icon">👤</div>
+                        <input type="text" id="lock-username" class="lock-input" placeholder="请输入用户名" onkeypress="if(event.key === 'Enter') document.getElementById('lock-password').focus()">
+                    </div>
+                    <div class="lock-input-group lock-password-group">
+                        <div class="lock-input-icon">🔑</div>
+                        <input type="password" id="lock-password" class="lock-input" placeholder="请输入密码" onkeypress="if(event.key === 'Enter') app.unlockWebsite()">
+                        <button class="lock-submit-btn" onclick="app.unlockWebsite()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="lock-error" class="lock-error" style="display: none;">
+                        <span>❌</span>
+                        <span class="lock-error-text"></span>
+                    </div>
+                </div>
+                
+                <div class="lock-footer">
+                    <button class="lock-forgot-btn" onclick="app.showForgotPasswordHint()">忘记密码？</button>
+                </div>
+            </div>
+            
+            <div class="lock-decoration">
+                <div class="lock-circle circle-1"></div>
+                <div class="lock-circle circle-2"></div>
+                <div class="lock-circle circle-3"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Goal Setting Modal -->
+    <div class="modal-overlay" id="goal-modal" onclick="if(event.target === this) app.closeGoalModal()">
+        <div class="modal modal-center">
+            <div class="modal-header">
+                <h3 class="modal-title">🎯 设置每周目标</h3>
+                <button class="modal-close" onclick="app.closeGoalModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="goal-setter">
+                    <div class="goal-setter-label">每周目标次数</div>
+                    <div class="goal-setter-control">
+                        <button class="goal-btn" onclick="app.adjustGoal(-1)">−</button>
+                        <span class="goal-value" id="goal-value-display">3</span>
+                        <button class="goal-btn" onclick="app.adjustGoal(1)">+</button>
+                    </div>
+                    <div class="goal-setter-range">
+                        <input type="range" min="1" max="50" value="3" id="goal-range" oninput="app.updateGoalFromRange(this.value)">
+                        <div class="goal-range-labels">
+                            <span>1</span>
+                            <span>50</span>
+                        </div>
+                    </div>
+                    <div id="goal-warning" class="goal-warning" style="display: none;">
+                        <span>️</span>
+                        <span id="goal-warning-text">每周目标超过 10 次，请注意劳逸结合，保持健康的生活习惯哦~</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeGoalModal()">取消</button>
+                <button class="btn btn-primary" onclick="app.saveGoal()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Record Complete Modal (合并完成提示和情绪选择) -->
+    <div class="modal-overlay" id="complete-modal" onclick="if(event.target === this) app.closeCompleteModal()">
+        <div class="modal modal-complete">
+            <div class="complete-header">
+                <div class="complete-icon">🎉</div>
+                <h2 class="complete-title">记录完成！</h2>
+                <p class="complete-subtitle" id="complete-message">太棒了！保持健康的节奏～</p>
+            </div>
+            <div class="complete-body">
+                <div class="complete-stats">
+                    <div class="complete-stat">
+                        <div class="complete-stat-icon">⏱️</div>
+                        <div class="complete-stat-value" id="complete-duration">0 分 0 秒</div>
+                        <div class="complete-stat-label">记录时长</div>
+                    </div>
+                    <div class="complete-stat">
+                        <div class="complete-stat-icon">📊</div>
+                        <div class="complete-stat-value" id="complete-week">0</div>
+                        <div class="complete-stat-label">本周次数</div>
+                    </div>
+                </div>
+                
+                <div class="complete-emotion-section">
+                    <h3 class="complete-emotion-title">💭 现在感觉怎么样？</h3>
+                    <div class="complete-emotion-grid" id="complete-emotion-grid">
+                        <!-- 情绪选项将通过 JS 生成 -->
+                    </div>
+                    <div class="complete-emotion-selected" id="complete-emotion-selected">
+                        <span class="complete-emotion-emoji">😊</span>
+                        <span class="complete-emotion-text">开心</span>
+                    </div>
+                </div>
+                
+                <div class="complete-actions">
+                    <button class="btn btn-secondary" onclick="app.skipEmotion()">跳过</button>
+                    <button class="btn btn-primary" onclick="app.confirmCompleteEmotion()">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 全局关闭函数
+        window.closeDetailFromOverlay = function(event) {
+            if (event.target === event.currentTarget) {
+                const modal = document.getElementById('detail-modal');
+                modal.classList.remove('active');
+                console.log('✅ Modal 已关闭');
+            }
+        };
+        
+        // 全局打开函数 - 直接调用 app.openDetail
+        window.openDetailFromRecord = function(id) {
+            console.log('✅ 点击了记录，ID:', id);
+            try {
+                if (typeof app !== 'undefined' && app.openDetail) {
+                    app.openDetail(id);
+                } else {
+                    console.error('❌ app.openDetail 不存在');
+                    alert('应用未加载完成，请稍后再试');
+                }
+            } catch (error) {
+                console.error('打开详情失败:', error);
+                alert('打开详情失败，请刷新页面重试');
+            }
+        };
+    </script>
+    
+    <!-- 测试按钮 - 临时（删除时移除） -->
+    
+    <!-- Identity Selection Modal -->
+    <div class="modal-overlay" id="identity-modal">
+        <div class="modal modal-center">
+            <div class="modal-header">
+                <h3 class="modal-title">选择身份</h3>
+                <button class="modal-close" onclick="app.closeIdentityModal()" aria-label="关闭">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="identity-grid">
+                    <div class="identity-option" onclick="app.selectIdentity('MALE', this)">
+                        <div class="identity-icon">👦</div>
+                        <div class="identity-label">男生</div>
+                    </div>
+                    <div class="identity-option" onclick="app.selectIdentity('FEMALE', this)">
+                        <div class="identity-icon">👧</div>
+                        <div class="identity-label">女生</div>
+                    </div>
+                    <div class="identity-option" onclick="app.selectIdentity('GAY', this)">
+                        <div class="identity-icon">🏳️</div>
+                        <div class="identity-label">Gay</div>
+                    </div>
+                    <div class="identity-option" onclick="app.selectIdentity('LESBIAN', this)">
+                        <div class="identity-icon">🌸</div>
+                        <div class="identity-label">拉拉</div>
+                    </div>
+                    <div class="identity-option" onclick="app.selectIdentity('OTHER', this)">
+                        <div class="identity-icon">✨</div>
+                        <div class="identity-label">Other</div>
+                    </div>
+                    <div class="identity-option" onclick="app.selectIdentity('FRIEND', this)">
+                        <div class="identity-icon">💕</div>
+                        <div class="identity-label">友谊助手</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirm Modal -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal modal-confirm">
+            <div class="confirm-icon" id="confirm-icon">⚠️</div>
+            <div class="confirm-title" id="confirm-title">确认操作</div>
+            <div class="confirm-message" id="confirm-message">确定吗？</div>
+            <div class="confirm-buttons">
+                <button class="btn btn-secondary" id="confirm-cancel-btn">取消</button>
+                <button class="btn btn-primary" id="confirm-ok-btn">确定</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon" id="toast-icon">✓</div>
+        <div class="toast-message" id="toast-message">操作成功</div>
+    </div>
+    
+    <!-- Onboarding Modal -->
+    <div class="modal-overlay" id="onboarding-modal">
+        <div class="modal modal-onboarding">
+            <div class="onboarding-icon">💖</div>
+            <div class="onboarding-title">欢迎来到白循</div>
+            <div class="onboarding-subtitle">选择您的身份</div>
+            <div class="identity-grid"></div>
+        </div>
+    </div>
+    
+    <!-- Password Settings Modal -->
+    <div class="modal-overlay" id="password-settings-modal">
+        <div class="modal modal-center">
+            <div class="modal-header">
+                <h3 class="modal-title">🔐 密码保护</h3>
+                <button class="modal-close" onclick="app.closePasswordSettingsModal()" aria-label="关闭">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="password-not-enabled">
+                    <div style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%); padding: var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-2xl); border: 1px solid rgba(99, 102, 241, 0.15);">
+                        <div style="display: flex; gap: var(--spacing-md); align-items: flex-start;">
+                            <span style="font-size: 24px; flex-shrink: 0;">💡</span>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 6px; font-size: 14px;">安全提示</div>
+                                <div style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+                                    • 密码使用 <strong>SHA-256</strong> 加密，存储在本浏览器<br>
+                                    • 忘记密码将无法找回，请妥善保管<br>
+                                    • 建议设置容易记住但不易被猜到的密码
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: var(--text-secondary); margin-bottom: var(--spacing-2xl);">
+                        启用密码保护后，每次访问都需要输入账户名和密码
+                    </p>
+                    <div class="form-group">
+                        <label class="form-label">账户名</label>
+                        <input type="text" id="password-username" class="form-input" placeholder="请输入账户名">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" id="password-input" class="form-input" placeholder="请输入密码（至少 6 位）" oninput="app.checkPasswordStrength()">
+                        <div id="password-strength-hint" style="font-size: 12px; margin-top: 6px; display: none;">
+                            <span id="password-strength-text"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">确认密码</label>
+                        <input type="password" id="password-confirm" class="form-input" placeholder="请再次输入密码">
+                    </div>
+                    <div class="complete-actions">
+                        <button class="btn btn-secondary" onclick="app.closePasswordSettingsModal()">取消</button>
+                        <button class="btn btn-primary" onclick="app.enablePassword()">启用密码保护</button>
+                    </div>
+                </div>
+                
+                <div id="password-enabled" style="display: none;">
+                    <div style="text-align: center; padding: var(--spacing-2xl);">
+                        <div style="font-size: 48px; margin-bottom: var(--spacing-lg);">✅</div>
+                        <div style="font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); margin-bottom: var(--spacing-md);">
+                            密码保护已启用
+                        </div>
+                        <div style="color: var(--text-secondary); margin-bottom: var(--spacing-2xl);">
+                            账户名：<span id="password-username-display" style="font-weight: var(--font-weight-semibold);"></span>
+                        </div>
+                    </div>
+                    <div class="complete-actions">
+                        <button class="btn btn-secondary" onclick="app.disablePassword()">关闭密码保护</button>
+                        <button class="btn btn-primary" onclick="app.showChangePasswordForm()">修改密码</button>
+                        <button class="btn btn-secondary" onclick="app.showSecurityQuestionForm()" style="margin-left: 10px;">🔒 设置提示问题</button>
+                    </div>
+                    
+                    <div style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-xl); border-top: 1px solid var(--border);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-lg);">
+                            <div>
+                                <div style="font-weight: var(--font-weight-semibold); font-size: 15px;"> 立即锁定网站</div>
+                                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                                    锁定后需要密码才能访问，适合离开时保护隐私
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="auto-lock-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <button class="btn btn-warning" onclick="app.lockWebsite()" style="width: 100%;">
+                            🔒 立即锁定
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="password-change-form" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">当前密码</label>
+                        <input type="password" id="current-password" class="form-input" placeholder="请输入当前密码">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">新密码</label>
+                        <input type="password" id="new-password" class="form-input" placeholder="请输入新密码（至少 6 位）">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">确认新密码</label>
+                        <input type="password" id="new-password-confirm" class="form-input" placeholder="请再次输入新密码">
+                    </div>
+                    <div class="complete-actions">
+                        <button class="btn btn-secondary" onclick="app.showPasswordEnabledView()">取消</button>
+                        <button class="btn btn-primary" onclick="app.changePassword()">确认修改</button>
+                    </div>
+                </div>
+                
+                <div id="security-question-form" style="display: none; margin-top: 20px;">
+                    <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%); padding: var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-xl); border: 1px solid rgba(102, 126, 234, 0.15);">
+                        <div style="display: flex; gap: var(--spacing-md); align-items: flex-start;">
+                            <span style="font-size: 24px; flex-shrink: 0;">💡</span>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 6px; font-size: 14px;">提示问题说明</div>
+                                <div style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+                                    • 设置提示问题后，忘记密码时可以通过回答问题来重置<br>
+                                    • 答案不区分大小写，但请确保容易记住<br>
+                                    • 建议选择一个只有你知道答案的问题
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">选择问题</label>
+                        <select id="security-question-select" class="form-input">
+                            <option value="">选择一个问题...</option>
+                            <option value="你最喜欢的老师叫什么名字？">你最喜欢的老师叫什么名字？</option>
+                            <option value="你第一只宠物的名字是什么？">你第一只宠物的名字是什么？</option>
+                            <option value="你出生的城市是哪里？">你出生的城市是哪里？</option>
+                            <option value="你最好的朋友叫什么名字？">你最好的朋友叫什么名字？</option>
+                            <option value="你的小学名称是什么？">你的小学名称是什么？</option>
+                            <option value="你母亲的生日是哪一天？">你母亲的生日是哪一天？</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">答案</label>
+                        <input type="text" id="security-question-answer" class="form-input" placeholder="请输入答案（不区分大小写）">
+                    </div>
+                    
+                    <div class="complete-actions">
+                        <button class="btn btn-secondary" onclick="app.showPasswordEnabledView()">取消</button>
+                        <button class="btn btn-primary" onclick="app.setSecurityQuestion()">保存提示问题</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal modal-center">
+            <div class="modal-header">
+                <h3 class="modal-title">🔐 身份验证</h3>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: var(--spacing-xl);">
+                    <div style="font-size: 48px; margin-bottom: var(--spacing-lg);">👤</div>
+                    <div style="font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); margin-bottom: var(--spacing-md);">
+                        请输入账户信息
+                    </div>
+                    <div style="color: var(--text-secondary); margin-bottom: var(--spacing-2xl);">
+                        访问白循需要验证身份
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">账户名</label>
+                    <input type="text" id="login-username" class="form-input" placeholder="请输入账户名">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="请输入密码">
+                </div>
+                <div class="complete-actions">
+                    <button class="btn btn-secondary" onclick="app.clearDataAndContinue()">清除数据继续</button>
+                    <button class="btn btn-primary" onclick="app.login()">登录</button>
+                </div>
+                <div id="login-error" style="margin-top: var(--spacing-lg); text-align: center; color: var(--danger); font-size: var(--font-size-sm); display: none;">
+                    账户名或密码错误
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hidden File Input -->
+    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="app.handleFileImport(event)">
+    
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/models/Record.js"></script>
+    <script src="js/models/User.js"></script>
+    <script src="js/components/Toast.js"></script>
+    <script src="js/components/Modal.js"></script>
+    <script src="js/components/Calendar.js"></script>
+    <script src="js/components/Charts.js"></script>
+    <script src="js/services/DataService.js"></script>
+    <script src="js/services/AchievementService.js"></script>
+    <script src="js/services/SuggestionService.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // 确保 app 在全局作用域
+        window.app = app;
+        console.log('✅ app 已暴露到全局 window 对象');
+    </script>
+</body>
+</html>

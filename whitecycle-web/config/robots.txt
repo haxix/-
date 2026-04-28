@@ -1,0 +1,11 @@
+# 白循 WhiteCycle
+
+User-agent: *
+Allow: /
+
+# 禁止爬取 API 端点
+Disallow: /api/
+Disallow: /config/
+
+# Sitemap
+Sitemap: https://whitecycle.com/sitemap.xml

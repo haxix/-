@@ -1,0 +1,104 @@
+/* ===================================
+   Layouts - 布局样式
+   =================================== */
+
+/* Grid 网格布局 */
+.grid {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Flex 弹性布局 */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.gap-sm {
+    gap: var(--spacing-sm);
+}
+
+.gap-md {
+    gap: var(--spacing-md);
+}
+
+.gap-lg {
+    gap: var(--spacing-lg);
+}
+
+.gap-xl {
+    gap: var(--spacing-xl);
+}
+
+/* Container 容器 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-2xl);
+}
+
+/* Section 区域 */
+.section {
+    padding: var(--spacing-4xl) 0;
+}
+
+/* Card Group 卡片组 */
+.card-group {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+/* Divider 分割线 */
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: var(--spacing-2xl) 0;
+}
+
+/* Spacer 间距 */
+.spacer-sm {
+    height: var(--spacing-lg);
+}
+
+.spacer-md {
+    height: var(--spacing-2xl);
+}
+
+.spacer-lg {
+    height: var(--spacing-3xl);
+}
+
+.spacer-xl {
+    height: var(--spacing-4xl);
+}

@@ -1,0 +1,53 @@
+/* ===================================
+   Themes - 主题样式
+   =================================== */
+
+/* 主题切换过渡 */
+* {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+/* 深色模式（默认） */
+:root {
+    color-scheme: dark;
+}
+
+/* 浅色模式 */
+[data-theme="light"] {
+    color-scheme: light;
+}
+
+/* 自动根据系统主题 */
+@media (prefers-color-scheme: light) {
+    :root.auto-theme {
+        color-scheme: light;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root.auto-theme {
+        color-scheme: dark;
+    }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+    :root {
+        --border: #ffffff;
+        --text-secondary: #ffffff;
+    }
+}
+
+/* 减少动画 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
