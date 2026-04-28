@@ -208,8 +208,7 @@ MIT License - 详见 [LICENSE](./LICENSE)
 - 设计：cloris
 - 产品：cloris
 <div align="center">
-  <img src="screenshot1.png" alt="欢迎投喂" width="600">
-  <p>欢迎投喂</p>
+    <p>欢迎观众老爷们投喂</p>
 </div>
 - <img width="1350" height="2025" alt="d515290e97aef6bdd9bf8205cc11a38b" src="https://github.com/user-attachments/assets/30fd3b98-b7a1-43fc-8801-10ef45ccfbff" />
 
