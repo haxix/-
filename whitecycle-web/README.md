@@ -1,4 +1,4 @@
-# 白循 WhiteCycle v6.0.0 企业版
+# 白循 WhiteCycle v6.0.0 
 
 <div align="center">
 
@@ -204,9 +204,10 @@ MIT License - 详见 [LICENSE](./LICENSE)
 
 ## 👥 团队
 
-- 开发者：WhiteCycle Team
-- 设计：WhiteCycle Team
-- 产品：WhiteCycle Team
+- 开发者：cloris
+- 设计：cloris
+- 产品：cloris<img width="1350" height="2025" alt="d515290e97aef6bdd9bf8205cc11a38b" src="https://github.com/user-attachments/assets/30fd3b98-b7a1-43fc-8801-10ef45ccfbff" />
+
 
 ---
 
@@ -214,7 +215,7 @@ MIT License - 详见 [LICENSE](./LICENSE)
 
 - 项目主页：[GitHub](https://github.com/whitecycle/whitecycle-web)
 - 问题反馈：[Issues](https://github.com/whitecycle/whitecycle-web/issues)
-- 邮箱：support@whitecycle.com
+- 邮箱：clorisLi7@outlook.com
 
 ---
 
